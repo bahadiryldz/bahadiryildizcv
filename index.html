@@ -34,10 +34,7 @@
     line-height: 1.2;
     margin: 3px 0;
   }
-  .prompt {
-    color: #00ff66;
-    margin-right: 6px;
-  }
+  .prompt { color: #00ff66; margin-right: 6px; }
   .input {
     background: transparent;
     border: none;
@@ -47,7 +44,7 @@
     font-size: 1rem;
     line-height: 1;
     flex: 1;
-    caret-color: transparent;
+    caret-color: #00ff66;
     position: relative;
   }
   .cursor::after {
@@ -55,15 +52,14 @@
     animation: blink 1s steps(1) infinite;
     margin-left: 2px;
   }
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    50.1%, 100% { opacity: 0; }
-  }
+  @keyframes blink { 0%,50%{opacity:1;} 50.1%,100%{opacity:0;} }
   .muted { color: #048b41; }
   .footer { margin-top: 12px; color: #444; font-size: .85rem; text-align: center; }
   a { color: #00ff66; }
   @media (max-width: 520px) {
     .wrap { margin: .5rem; padding: .5rem; }
+    #miniGameOverlay div { font-size: 0.9rem; }
+    button { padding: 10px 14px; font-size: 1rem; }
   }
 </style>
 </head>
@@ -86,11 +82,10 @@
 const screen = document.getElementById('screen');
 const logEl = document.getElementById('log');
 const cmdInput = document.getElementById('cmd');
-const cursor = document.getElementById('cursor');
 
 const USER_NAME = "Bahadır YILDIZ";
 const USER_TITLE = "Biomedical Engineer / Junior Security Analyst";
-const USER_LOCATION = "Türkiye";
+const USER_LOCATION = "Turkey";
 const LINKEDIN = "https://www.linkedin.com/in/bahad%C4%B1r-y%C4%B1ld%C4%B1z-8b8349174";
 const SECRET_PW = "Cyberbiomedeng";
 
@@ -158,11 +153,12 @@ function openMiniGame() {
   });
 
   const hdr = document.createElement('div');
-  hdr.textContent = "Secret Mini-Game — Snake (Use arrow keys)";
+  hdr.textContent = "Secret Mini-Game — Snake (Arrow keys / Touch)";
   hdr.style.color = '#00ff66'; hdr.style.marginBottom = '8px';
 
   const canvas = document.createElement('canvas');
-  canvas.width = 600; canvas.height = 420;
+  canvas.width = Math.min(window.innerWidth*0.9,600);
+  canvas.height = Math.min(window.innerHeight*0.7,420);
   Object.assign(canvas.style, {background:'#010101', border:'2px solid #003300'});
 
   const footer = document.createElement('div');
@@ -224,6 +220,7 @@ function openMiniGame() {
     });
   }
 
+  /* Key and touch controls */
   function keyHandler(e){
     const k=e.key;
     if(k==='ArrowUp'&&dir.y!==1)dir={x:0,y:-1};
@@ -233,6 +230,24 @@ function openMiniGame() {
     if(k==='Escape')close();
   }
   document.addEventListener('keydown',keyHandler);
+
+  // Touch control for mobile
+  canvas.addEventListener('touchstart', e=>{
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    const centerX = rect.width/2;
+    const centerY = rect.height/2;
+    let newDir;
+    if(Math.abs(x-centerX) > Math.abs(y-centerY)){
+      newDir = (x>centerX)?{x:1,y:0}:{x:-1,y:0};
+    } else {
+      newDir = (y>centerY)?{x:0,y:1}:{x:0,y:-1};
+    }
+    if((newDir.x !== -dir.x || newDir.x===0) && (newDir.y !== -dir.y || newDir.y===0)) dir=newDir;
+  });
+
   const interval=setInterval(step,120);
 
   function close(){
@@ -286,30 +301,24 @@ async function runCmd(cmd) {
       await typeLine("unlock <pw>— Hidden mini-game Easter Egg");
       await typeLine("clear      — Clear screen");
       break;
-
     case 'whoami':
       await typeLine(`${USER_NAME} — ${USER_TITLE}`);
       await typeLine(USER_LOCATION);
       break;
-
     case 'experience':
       for (let line of EXPERIENCE) await typeLine(line);
       break;
-
     case 'projects':
       for (let p of PROJECTS) await typeLine(`• ${p.title}: ${p.url}`);
       break;
-
     case 'clear':
       logEl.innerHTML = "";
       break;
-
     case 'ip':
       awaitingConfirmation = 'ip';
       await typeLine("This process will obtain your IP address via ipify.org.");
       await typeLine("Would you like to continue? (y/n)");
       break;
-
     case 'unlock':
       const pw = parts.slice(1).join(" ");
       if (pw === SECRET_PW) {
@@ -319,7 +328,6 @@ async function runCmd(cmd) {
         await typeLine("❌ Wrong password. Try again.");
       }
       break;
-
     default:
       await typeLine(`Command not found: ${input}`);
   }
@@ -335,6 +343,7 @@ cmdInput.addEventListener('keydown', async e => {
 });
 
 screen.addEventListener('click', () => cmdInput.focus());
+
 (async () => {
   await typeLine("Initializing terminal...");
   await typeLine("Note: type 'help' for available commands.");
@@ -343,4 +352,3 @@ screen.addEventListener('click', () => cmdInput.focus());
 
 </body>
 </html>
-
