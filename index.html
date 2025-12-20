@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Bahadır YILDIZ — Interactive Resume</title>
+<title>Bahadır YILDIZ Resume</title>
 <style>
   html, body {
     height: 100%;
@@ -220,7 +220,7 @@ function openMiniGame() {
     box.appendChild(reward);
     document.getElementById('secretLink').addEventListener('click', e=>{
       e.preventDefault();
-      window.open('https://www.youtube.com/@BioEngX', '_blank');
+      window.open('https://www.youtube.com/watch?v=b8mYBn0O7dY&list=LL&index=299', '_blank');
     });
   }
 
@@ -263,7 +263,7 @@ async function runCmd(cmd) {
           const res = await fetch('https://api.ipify.org?format=json');
           const data = await res.json();
           await typeLine("Your Public IP: " + data.ip);
-          await typeLine("Selam! Bu sistemi keşfettiğin için teşekkürler — Bahadır YILDIZ.");
+          await typeLine("Thank you for discovering this system. — Bahadır YILDIZ.");
         } catch {
           await typeLine("Connection failed. Simulated IP: 203.0.113." + Math.floor(Math.random() * 255));
         }
@@ -306,8 +306,8 @@ async function runCmd(cmd) {
 
     case 'ip':
       awaitingConfirmation = 'ip';
-      await typeLine("Bu işlem ipify.org üzerinden IP adresinizi alacaktır.");
-      await typeLine("Devam etmek istiyor musunuz? (y/n)");
+      await typeLine("This process will obtain your IP address via ipify.org.");
+      await typeLine("Would you like to continue? (y/n)");
       break;
 
     case 'unlock':
@@ -343,3 +343,4 @@ screen.addEventListener('click', () => cmdInput.focus());
 
 </body>
 </html>
+
