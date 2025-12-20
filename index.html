@@ -304,6 +304,7 @@ async function runCmd(cmd) {
     case 'whoami':
       await typeLine(`${USER_NAME} — ${USER_TITLE}`);
       await typeLine(USER_LOCATION);
+      await typeLine(LINKEDIN);
       break;
     case 'experience':
       for (let line of EXPERIENCE) await typeLine(line);
@@ -352,3 +353,4 @@ screen.addEventListener('click', () => cmdInput.focus());
 
 </body>
 </html>
+
